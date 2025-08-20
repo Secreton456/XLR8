@@ -12,3 +12,9 @@ Power supply < 12 V
 25cm x 25cm x 25cm
 
 ### Chassis
+Acrylic
+
+
+#### Differential drive mode
+
+#### 
