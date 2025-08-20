@@ -3,4 +3,5 @@
 ## Mode of control
 Using Hand gestures
 
-Nothing else has been decided yet (-_-)
+## August 20, 2025
+Electrical kit has been distributed
