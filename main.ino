@@ -8,7 +8,7 @@
 // Also ensure that your SSID is *unique*. One way to ensure this is to set it to your XLR8 registration number
 // MAKE SURE THAT THE PASSWORD IS AT LEAST 8 DIGITS LONG OR THE CODE WON'T WORK
 const char* ssid = "PicoW_AP";
-const char* password = "12345678";
+const char* password = "Llamacool";
 
 // Define a structure to hold IMU (Inertial Measurement Unit) data
 typedef struct {
@@ -46,7 +46,9 @@ void updateMotorControl() {
    *    map()
    *    atan2()
    */
-
+  System.println(gx);
+  System.println(gy);
+  System.println(gz);
 
 
   // Adjust motor speed thresholds. 
