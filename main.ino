@@ -46,9 +46,9 @@ void updateMotorControl() {
    *    map()
    *    atan2()
    */
-  System.println(gx);
-  System.println(gy);
-  System.println(gz);
+  Serial.println(gx);
+  Serial.println(gy);
+  Serial.println(gz);
 
 
   // Adjust motor speed thresholds. 
