@@ -7,7 +7,7 @@
 // Ensure that it's a *secret* password to avoid difficulties during running
 // Also ensure that your SSID is *unique*. One way to ensure this is to set it to your XLR8 registration number
 // MAKE SURE THAT THE PASSWORD IS AT LEAST 8 DIGITS LONG OR THE CODE WON'T WORK
-const char* ssid = "PicoW_AP";
+const char* ssid = "Speedaf";
 const char* password = "Llamacool";
 
 // Define a structure to hold IMU (Inertial Measurement Unit) data
