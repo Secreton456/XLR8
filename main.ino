@@ -35,29 +35,8 @@ void updateMotorControl() {
   }
 
   // Adjust motor speed thresholds
-  if (spd >60 && spd <=90){
-    spd = 90;
-  }
-  if (spd > 90 && spd <=120){
-    spd = 120;
-  }
-  if (spd > 120 && spd <= 150) {
-    spd = 150;
-  }
-
-
-  if (spd > 150 && spd <= 180) {
-    spd = 180;
-  }
+  if (spd <60) spd = 0;
   
-  if (spd > 180 && spd <= 210) {
-    spd = 210;
-  }
-
-  
-  if (spd > 210 && spd <= 255) {
-    spd = 255;
-  }
   // Display motor control information
   Serial.print("cmd: ");
   Serial.print(cmd);   // Display motor command
