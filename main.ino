@@ -4,9 +4,6 @@
 #include <stdio.h>
 
 // SSID and password for the access point
-// Ensure that it's a *secret* password to avoid difficulties during running
-// Also ensure that your SSID is *unique*. One way to ensure this is to set it to your XLR8 registration number
-// MAKE SURE THAT THE PASSWORD IS AT LEAST 8 DIGITS LONG OR THE CODE WON'T WORK
 const char* ssid = "Speedaf";
 const char* password = "Llamacool";
 
@@ -19,6 +16,54 @@ IMUData myMessage; // Create a variable to store received IMU data
 int cmd = 0;       // Initialize motor control command variable
 int spd = 0;       // Initialize motor speed variable
 
+// Function to update motor control based on received IMU data
+void updateMotorControl() {
+  float gx = myMessage.gx;
+  float gy = myMessage.gy;
+  float gz = myMessage.gz;
+
+  // Motor control logic based on IMU data
+  if ((gz != 0) && (gx != 0) && (abs(gy) < 2)) {
+    spd = constrain(abs(map((atan2(gx, gz) * 180 / PI), 0, 90, 0, 255)), 0, 255);
+    cmd = (gx > 0) ? 1 : 2; // Forward or backward
+  } else if ((gz != 0) && (gy != 0) && (abs(gx) < 2)) {
+    spd = constrain(abs(map((atan2(gy, gz) * 180 / PI), 0, 90, 0, 255)), 0, 255);
+    cmd = (gy > 0) ? 3 : 4; // Right or left
+  } else {
+    cmd = 0; // Stop
+    spd = 0;
+  }
+
+  // Adjust motor speed thresholds
+  if (spd >60 && spd <=90){
+    spd = 90;
+  }
+  if (spd > 90 && spd <=120){
+    spd = 120;
+  }
+  if (spd > 120 && spd <= 150) {
+    spd = 150;
+  }
+
+
+  if (spd > 150 && spd <= 180) {
+    spd = 180;
+  }
+  
+  if (spd > 180 && spd <= 210) {
+    spd = 210;
+  }
+
+  
+  if (spd > 210 && spd <= 255) {
+    spd = 255;
+  }
+  // Display motor control information
+  Serial.print("cmd: ");
+  Serial.print(cmd);   // Display motor command
+  Serial.print(", speed: ");
+  Serial.println(spd); // Display motor speed
+}
 
 // Pin assignments for motor control
 const int ENA = 8;
@@ -26,75 +71,23 @@ const int ENB = 9;
 
 const int IN1 = 10;
 const int IN2 = 11;
-const int IN3 = 12;
+const int IN3 = 12;  
 const int IN4 = 13;
 
 // Create a WiFiServer object for the TCP server
 WiFiServer server(80);
 
-// Function to update motor control based on received IMU data
-// WRITE YOUR CODE IN THIS FUNCTION
-void updateMotorControl() {
-  float gx = myMessage.gx;
-  float gy = myMessage.gy;
-  float gz = myMessage.gz;
-
-  /** Apply Motor Control logic based on IMU data
-   * 
-   * You can use some cool functions like:
-   *    constrain()
-   *    map()
-   *    atan2()
-   */
-  Serial.println(gx);
-  Serial.println(gy);
-  Serial.println(gz);
-
-
-  // Adjust motor speed thresholds. 
-  // Ensure that motor speed stays in the range 0 to 255 for PWM output
-   
-
-
-
-  // Display motor control information (for debugging)
-  
-
-
-}
-
-// WRITE YOUR CODE IN THIS FUNCTION
-void applyMotorControl() {
-  switch (cmd) {
-    case 1:  // Forward
-
-      break;
-    case 2:  // Backward
-
-      break;
-    case 3:  // Right
-
-      break;
-    case 4:  // Left
-
-      break;
-    default:  // Stop
-
-      break;
-  }
-
-  // Apply the calculated motor speed to both motors
- 
-
-}
-
-
-// MODIFY ONLY IF YOU'RE CONFIDENT
 void setup() {
   // Start Serial for debugging
   Serial.begin(115200);
     // Configure motor control pins as outputs
-  
+  pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(ENA, OUTPUT);
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+  pinMode(ENB, OUTPUT);
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
 
   // Set up the access point
   Serial.println("Setting up WiFi AP...");
@@ -114,8 +107,46 @@ void setup() {
 
 }
 
+void applyMotorControl() {
+  switch (cmd) {
+    case 2:  // Forward
+      digitalWrite(IN1, HIGH);
+      digitalWrite(IN2, LOW);
+      digitalWrite(IN3, HIGH);
+      digitalWrite(IN4, LOW);
+      break;
+    case 1:  // Backward
+      digitalWrite(IN1, LOW);
+      digitalWrite(IN2, HIGH);
+      digitalWrite(IN3, LOW);
+      digitalWrite(IN4, HIGH);
+      break;
+    case 3:  // Right
+      digitalWrite(IN1, HIGH);
+      digitalWrite(IN2, LOW);
+      digitalWrite(IN3, LOW);
+      digitalWrite(IN4, HIGH);
+      break;
+    case 4:  // Left
+      digitalWrite(IN1, LOW);
+      digitalWrite(IN2, HIGH);
+      digitalWrite(IN3, HIGH);
+      digitalWrite(IN4, LOW);
+      break;
+    default:  // Stop
+      digitalWrite(IN1, LOW);
+      digitalWrite(IN2, LOW);
+      digitalWrite(IN3, LOW);
+      digitalWrite(IN4, LOW);
+      spd = 0;
+      break;
+  }
 
-// MODIFY ONLY IF YOU'RE CONFIDENT
+  // Apply the calculated motor speed to both motors
+  analogWrite(ENA, spd);
+  analogWrite(ENB, spd);
+}
+
 void loop() {
   // Check if a client has connected
   WiFiClient client = server.available();
@@ -149,12 +180,8 @@ void loop() {
         myMessage.gz = arr[2];
         //Serial.println("gx");
         //Serial.println(myMessage.gx);
-
-        // Your functions are being called here
         updateMotorControl();
         applyMotorControl();
-
-
         digitalWrite(LED_BUILTIN, LOW);}
       digitalWrite(LED_BUILTIN, LOW);
    // Continuously update and apply motor control
