@@ -23,41 +23,30 @@ void updateMotorControl() {
   float gz = myMessage.gz;
 
   // Motor control logic based on IMU data
-  if ((gz != 0) && (gx != 0) && (abs(gy) < 2)) {
-    spd = constrain(abs(map((atan2(gx, gz) * 180 / PI), 0, 90, 0, 255)), 0, 255);
-    cmd = (gx > 0) ? 1 : 2; // Forward or backward
-  } else if ((gz != 0) && (gy != 0) && (abs(gx) < 2)) {
-    spd = constrain(abs(map((atan2(gy, gz) * 180 / PI), 0, 90, 0, 255)), 0, 255);
-    cmd = (gy > 0) ? 3 : 4; // Right or left
-  } else {
-    cmd = 0; // Stop
+  if (abs(gx) > 2.0 && abs(gy)< 2.0){
+    spd = abs(atan2(gx,gz)*180.0/PI);
+    spd = constrain(spd,0,90);
+    spd = pow(spd/90.0,1)*(185) + 70;
+    if(gx >0 ){
+      cmd =2; // Right
+    
+    }
+    else cmd = 1; // Left
+  }
+
+  else if (abs(gx) <2.0 && abs(gy)>2.0){
+    spd = abs(atan2(gy,gz)*180.0/PI);
+    spd = constrain(spd,0,90);
+    spd = pow(spd/90.0,1)*185+70;
+    if(gy>0) cmd = 3; //Forward
+    else cmd = 4; //Backward
+
+  }
+  else {
+    cmd =0;
     spd = 0;
   }
 
-  // Adjust motor speed thresholds
-  if (spd >60 && spd <=90){
-    spd = 90;
-  }
-  if (spd > 90 && spd <=120){
-    spd = 120;
-  }
-  if (spd > 120 && spd <= 150) {
-    spd = 150;
-  }
-
-
-  if (spd > 150 && spd <= 180) {
-    spd = 180;
-  }
-  
-  if (spd > 180 && spd <= 210) {
-    spd = 210;
-  }
-
-  
-  if (spd > 210 && spd <= 255) {
-    spd = 255;
-  }
   // Display motor control information
   Serial.print("cmd: ");
   Serial.print(cmd);   // Display motor command
@@ -109,25 +98,25 @@ void setup() {
 
 void applyMotorControl() {
   switch (cmd) {
-    case 2:  // Forward
+    case 2:  // Left
       digitalWrite(IN1, HIGH);
       digitalWrite(IN2, LOW);
       digitalWrite(IN3, HIGH);
       digitalWrite(IN4, LOW);
       break;
-    case 1:  // Backward
+    case 1:  // Right
       digitalWrite(IN1, LOW);
       digitalWrite(IN2, HIGH);
       digitalWrite(IN3, LOW);
       digitalWrite(IN4, HIGH);
       break;
-    case 3:  // Right
+    case 3:  // Forward
       digitalWrite(IN1, HIGH);
       digitalWrite(IN2, LOW);
       digitalWrite(IN3, LOW);
       digitalWrite(IN4, HIGH);
       break;
-    case 4:  // Left
+    case 4:  // Backward
       digitalWrite(IN1, LOW);
       digitalWrite(IN2, HIGH);
       digitalWrite(IN3, HIGH);
