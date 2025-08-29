@@ -94,7 +94,7 @@ void setup() {
   // Start Serial for debugging
   Serial.begin(115200);
     // Configure motor control pins as outputs
-  /
+  
 
   // Set up the access point
   Serial.println("Setting up WiFi AP...");
