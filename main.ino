@@ -60,8 +60,8 @@ const int ENB = 9;
 
 const int IN1 = 10;
 const int IN2 = 11;
-const int IN3 = 12;  
-const int IN4 = 13;
+const int IN3 = 6;  
+const int IN4 = 4;
 
 // Create a WiFiServer object for the TCP server
 WiFiServer server(80);
