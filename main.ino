@@ -26,7 +26,7 @@ void updateMotorControl() {
   if (abs(gx) > 2.0 && abs(gy)< 2.0){
     spd = abs(atan2(gx,gz)*180.0/PI);
     spd = constrain(spd,0,90);
-    spd = pow(spd/90.0,1)*(185) + 70;
+    spd = pow(spd/90.0,2)*(185) + 70;
     if(gx >0 ){
       cmd =2; // Right
     
@@ -37,7 +37,7 @@ void updateMotorControl() {
   else if (abs(gx) <2.0 && abs(gy)>2.0){
     spd = abs(atan2(gy,gz)*180.0/PI);
     spd = constrain(spd,0,90);
-    spd = pow(spd/90.0,1)*185+70;
+    spd = pow(spd/90.0,2)*185+70;
     if(gy>0) cmd = 3; //Forward
     else cmd = 4; //Backward
 
@@ -110,13 +110,13 @@ void applyMotorControl() {
       digitalWrite(IN3, LOW);
       digitalWrite(IN4, HIGH);
       break;
-    case 3:  // Forward
+    case 4:  // Forward
       digitalWrite(IN1, HIGH);
       digitalWrite(IN2, LOW);
       digitalWrite(IN3, LOW);
       digitalWrite(IN4, HIGH);
       break;
-    case 4:  // Backward
+    case 3:  // Backward
       digitalWrite(IN1, LOW);
       digitalWrite(IN2, HIGH);
       digitalWrite(IN3, HIGH);
